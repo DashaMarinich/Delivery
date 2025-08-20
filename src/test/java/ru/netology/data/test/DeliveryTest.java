@@ -25,10 +25,10 @@ public class DeliveryTest {
     @DisplayName("Should successful plan and replan meeting")
     void shouldSuccessfulPlanAndReplanMeeting() {
         var validUser = DataGenerator.Registration.generateUser("ru");
-        var daysToAddForFirstMeeting = 4;
-        var firstMeetingDate = DataGenerator.generateDate(daysToAddForFirstMeeting);
-        var daysToAddForSecondMeeting = 7;
-        var secondMeetingDate = DataGenerator.generateDate(daysToAddForSecondMeeting);
+
+        var firstMeetingDate = DataGenerator.generateDate(4);
+
+        var secondMeetingDate = DataGenerator.generateDate(7);
 
         $("[data-test-id='city'] input").setValue(validUser.getCity());
         $("[data-test-id='date'] input").doubleClick();
@@ -38,13 +38,10 @@ public class DeliveryTest {
         $("[data-test-id='phone'] input").setValue(validUser.getPhone());
         $("[data-test-id='agreement']").click();
         $(Selectors.byText("Запланировать")).click();
-        $(Selectors.byText("Успешно!")).shouldBe(visible, Duration.ofSeconds(15));
         $("[data-test-id='success-notification']").should(Condition.visible, Duration.ofSeconds(15))
-                .shouldHave(exactText("Встреча успешно забронирована на " + firstMeetingDate))
+                .shouldHave(exactText("Успешно! Встреча успешно запланирована на " + firstMeetingDate))
                 .shouldBe(visible);
-
-        $("[data-test-id='date'] input").doubleClick();
-        $("[data-test-id='date'] input").press(Keys.DELETE);
+        $("[data-test-id='date'] input").press(Keys.chord(Keys.SHIFT, Keys.HOME), Keys.BACK_SPACE);
         $("[data-test-id='date'] input").setValue(secondMeetingDate);
         $(Selectors.byText("Запланировать")).click();
         $("[data-test-id='replan-notification']").should(Condition.visible, Duration.ofSeconds(15))
